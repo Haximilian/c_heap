@@ -1,20 +1,16 @@
 #include <stdbool.h>
-
-// interface / memory layout
-typedef struct element element_t;
-struct element {
-    int freq;
-};
+#include <stddef.h>
 
 typedef struct heap heap_t;
 struct heap {
-    int size;
-    int cap;
-    element_t* arr[0];
+    size_t size;
+    size_t cap;
+    int (*ord)(void*);
+    void* arr[0];
 };
 
-heap_t* create_heap(int cap);
+heap_t* create_heap(size_t cap, int (*ord)(void*));
 
-bool heap_push(heap_t* heap, element_t* ptr);
+bool heap_push(heap_t* heap, void* ptr);
 
-bool heap_pop(heap_t* heap, element_t** r_val);
+bool heap_pop(heap_t* heap, void** r_val);

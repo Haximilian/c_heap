@@ -2,24 +2,26 @@
 
 #include <stdlib.h>
 
-heap_t* create_heap(int cap) {
+heap_t* create_heap(size_t cap, int (*ord)(void*)) {
     heap_t* heap = malloc(sizeof(heap_t) + cap * sizeof(void*));
     heap->size = 0;
     heap->cap = cap;
-    return heap;
+    heap->ord = ord;
+
+    return(heap);
 }
 
-bool heap_push(heap_t* heap, element_t* ptr) {
+bool heap_push(heap_t* heap, void* ptr) {
     if (heap->size >= heap->cap) {
         return(false);
     }
 
-    int curr = heap->size++;
-    int parent = (curr - 1) / 2;
+    size_t curr = heap->size++;
+    size_t parent = (curr - 1) / 2;
 
     heap->arr[curr] = ptr;
 
-    while (curr != 0 && heap->arr[parent]->freq > heap->arr[curr]->freq) {
+    while (curr != 0 && heap->ord(heap->arr[parent]) > heap->ord(heap->arr[curr])) {
         heap->arr[curr] = heap->arr[parent];
         heap->arr[parent] = ptr;
 
@@ -31,17 +33,17 @@ bool heap_push(heap_t* heap, element_t* ptr) {
 }
 
 void _bubble_down(heap_t* heap, int curr) {
-    int l;
-    int r;
-    int small;
-    element_t* t;
+    size_t l;
+    size_t r;
+    size_t small;
+    void* t;
 
     for (;;) {
         l = curr * 2 + 1;
         r = curr * 2 + 2;
 
         if (l < heap->size && r < heap->size) {
-            if (heap->arr[l]->freq < heap->arr[r]->freq) {
+            if (heap->ord(heap->arr[l]) < heap->ord(heap->arr[r])) {
                 small = l;
             } else {
                 small = r;
@@ -56,7 +58,7 @@ void _bubble_down(heap_t* heap, int curr) {
             break;
         }
 
-        if (heap->arr[curr]->freq > heap->arr[small]->freq) {
+        if (heap->ord(heap->arr[curr]) > heap->ord(heap->arr[small])) {
             t = heap->arr[small];
             heap->arr[small] = heap->arr[curr];
             heap->arr[curr] = t;
@@ -68,7 +70,7 @@ void _bubble_down(heap_t* heap, int curr) {
     }
 }
 
-bool heap_pop(heap_t* heap, element_t** r_val) {
+bool heap_pop(heap_t* heap, void** r_val) {
     if (heap->size == 0) {
         return(false);
     }
