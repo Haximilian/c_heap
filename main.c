@@ -7,12 +7,10 @@
 
 #define ARR_LENGTH 128
 
-static
 int ord(void* elem) {
     return(*(int*)elem);
 }
 
-static
 bool unittest(int* l, int* shuffle, size_t size) {
     heap_t* heap = create_heap(size, ord);
 
@@ -34,7 +32,6 @@ bool unittest(int* l, int* shuffle, size_t size) {
     return(true);
 }
 
-static 
 void arr_shuffle(int* arr, size_t size) {
     printf("SHUFFLE ARRAY:\n");
     for (size_t i = 0; i < size; i++) {
@@ -48,6 +45,8 @@ void arr_shuffle(int* arr, size_t size) {
 }
 
 int main(int argc, char** argv) {
+    srand(time(0));
+
     int arr[ARR_LENGTH];
     for (size_t i = 0; i < ARR_LENGTH; i++) {
         arr[i] = i;
